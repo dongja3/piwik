@@ -1,6 +1,6 @@
 
 Ext.Ajax.on("beforerequest", function(conn, options){
-	//oocl_piwik_tracker.setupContext('searchUser','search/userids');
+	//oocl_piwik_tracker.setupContext('search/userids');
 	var piwik_uuid=oocl_piwik_tracker._createContext();
 	oocl_piwik_common._setPiwikHeader(piwik_uuid);
 	oocl_piwik_tracker._clearContext();

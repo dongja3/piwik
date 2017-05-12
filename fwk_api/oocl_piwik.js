@@ -3,8 +3,8 @@
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
   _piwik_cvalue='';
-  
-	
+
+
   (function() {
     var l=document.getElementsByTagName('noscript')[0].getAttribute("src");
     var u=l.substring(0,l.indexOf('?'))+'/';
@@ -85,7 +85,7 @@ oocl_piwik.Common = function(){
     if(typeof Ext =='undefined'){
       return false;
     }
-    
+
     return true;
   };
   this._setCatHeader = function(bfName){
@@ -136,14 +136,14 @@ oocl_piwik.Common = function(){
 oocl_piwik_common= new oocl_piwik.Common();
 oocl_piwik.Tracker = function(){};
 oocl_piwik.Tracker = function(){
-  this.setupContext  = function(bfName,customUrl){
-	oocl_piwik_bfName=bfName;
-    oocl_piwik_customUrl=customUrl;
+this.setupContext  = function(bfName){
+  	oocl_piwik_bfName=bfName;
+    oocl_piwik_customUrl=bfName;
   }
-  this._clearContext =function(){
+this._clearContext =function(){
 	oocl_piwik_bfName=null;
 	oocl_piwik_customUrl=null;
-  }
+}
   this._createContext = function(){
     var context = new oocl_piwik.Context(oocl_piwik_bfName,oocl_piwik_customUrl);
     var uuid = oocl_piwik.uuid.generateUUID();
@@ -191,7 +191,7 @@ oocl_piwik.Context= function(bfName,customUrl){
     this.customUrl=customUrl;
   }
   oocl_piwik_customUrl=this.customUrl;
- 
+
 }
 
 
