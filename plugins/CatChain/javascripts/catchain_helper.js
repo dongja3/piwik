@@ -23,7 +23,7 @@ var CatChain_Helper = {
     getCatLink: function (idSite, period, date, actionName) {
         var catDomain='CMCD';
       //  var url = 'index.php?module=Overlay&period=' + encodeURIComponent(period) + '&date=' + encodeURIComponent(date) + '&idSite=' + encodeURIComponent(idSite);
-        var url='http://localhost:8080/cat/r/chain?op=history&domain='+catDomain
+        var url='&domain='+catDomain
         url = url+ '&date=' + encodeURIComponent(date) + '&reportType='+encodeURIComponent(period) +'&name='+encodeURIComponent(actionName);
         return url;
     }
