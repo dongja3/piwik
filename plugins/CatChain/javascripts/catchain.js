@@ -2,43 +2,48 @@ function DataTable_RowActions_CatChain(dataTable) {
     this.dataTable = dataTable;
 }
 
-DataTable_RowActions_CatChain.prototype = new DataTable_RowAction();
-
-DataTable_RowActions_CatChain.isPageUrlReport = function (module, action) {
-    return false;
-};
-
-DataTable_RowActions_CatChain.isPageTitleReport = function (module, action) {
-    return true;
-};
+DataTable_RowActions_CatChain.prototype = new DataTable_RowAction;
 
 DataTable_RowActions_CatChain.registeredReports = [];
 DataTable_RowActions_CatChain.registerReport = function (handler) {
+    console.info('DataTable_RowActions_CatChain.registerReport ');
     DataTable_RowActions_CatChain.registeredReports.push(handler);
 }
 
-DataTable_RowActions_CatChain.prototype.performAction  = function (label, tr, e) {
-  var separator = ' > '; // LabelFilter::SEPARATOR_RECURSIVE_LABEL
-   var labelParts = label.split(separator);
-   for (var i = 0; i < labelParts.length; i++) {
-       var labelPart = labelParts[i].replace('@', '');
-       labelParts[i] = $.trim(decodeURIComponent(labelPart));
-   }
-   label = labelParts.join(piwik.config.action_url_category_delimiter);
-   var date = piwik.currentDateString.replace('-','').replace('-','');
-   var period = piwik.period;
-   var link = CatChain_Helper.getCatLink(this.dataTable.param.idSite, period,date,label);
-   DataTable_RowActions_CatChain.prototype.openPopover.apply(this, [link]);
+
+DataTable_RowActions_CatChain.prototype.onClick = function (actionA, tr, e) {
+     var label=this.getAllLevelLabelsFromTr(tr);
+     var date = piwik.currentDateString.replace('-','').replace('-','');
+     var period = piwik.period;
+     var catlink = CatChain_Helper.getCatLink(this.dataTable.param.idSite, period,date,label);
+     catlink ='http://localhost:8080/cat/r/chain?op=history'+catlink;
+  actionA.attr({
+      target: '_blank',
+      href: catlink
+  });
+    return true;
 };
 
-DataTable_RowActions_CatChain.prototype.doOpenPopover = function (urlParam) {
-  params = urlParam.substring(urlParam.indexOf('&domain='),urlParam.length);
-  var link ='http://localhost:8080/cat/r/chain?op=history'+params;
-  window.open(link, "_blank");
-};
-
-
-
+DataTable_RowActions_CatChain.prototype.getAllLevelLabelsFromTr=function(tr){
+    var allClasses = tr.attr('class');
+    var matches = allClasses.match(/level[0-9]+/);
+    var level = parseInt(matches[0].substring(5, matches[0].length), 10);
+    var label = this.getLabelFromTr(tr).replace('@','');
+    while (level>0){
+        var findLevel = 'level' + (level - 1);
+        var ptr = tr;
+        while ((ptr = ptr.prev()).size() > 0) {
+            if (!ptr.hasClass(findLevel) || ptr.hasClass('nodata')) {
+                continue;
+            }
+            var t = this.getLabelFromTr(ptr).replace('@','');
+            label = t+"/"+label;
+            break;
+        }
+        level--;
+    }
+    return label;
+}
 
 DataTable_RowActions_Registry.register({
     name: 'CatChain',
@@ -46,7 +51,7 @@ DataTable_RowActions_Registry.register({
     dataTableIcon: 'plugins/CatChain/images/catchain_icon.png',
     dataTableIconHover: 'plugins/CatChain/images/catchain_icon_hover.png',
 
-    order: 70,
+    order: 20,
 
     dataTableIconTooltip: [
       'CAT Chain',
