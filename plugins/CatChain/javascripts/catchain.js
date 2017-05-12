@@ -19,9 +19,20 @@ DataTable_RowActions_CatChain.registerReport = function (handler) {
     DataTable_RowActions_CatChain.registeredReports.push(handler);
 }
 
+/** To be overridden */
+DataTable_RowAction.prototype.performAction = function (label, tr, e) {
+  var separator = ' > '; // LabelFilter::SEPARATOR_RECURSIVE_LABEL
+   var labelParts = label.split(separator);
+   for (var i = 0; i < labelParts.length; i++) {
+       var labelPart = labelParts[i].replace('@', '');
+       labelParts[i] = $.trim(decodeURIComponent(labelPart));
+   }
+   label = labelParts.join(piwik.config.action_url_category_delimiter);
+   tr.label=label;
+};
 
 DataTable_RowActions_CatChain.prototype.onClick = function (actionA, tr, e) {
-     var actionName=this.actionName;
+     var actionName=tr.label;
      var date = piwik.currentDateString.replace('-','').replace('-','');
      var period = piwik.period;
      var href = CatChain_Helper.getCatLink(this.dataTable.param.idSite, period,date,actionName);
