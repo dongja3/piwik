@@ -15,11 +15,14 @@ DataTable_RowActions_CatChain.prototype.onClick = function (actionA, tr, e) {
      var label=this.getAllLevelLabelsFromTr(tr);
      var date = piwik.currentDateString.replace('-','').replace('-','');
      var period = piwik.period;
-     var catlink = CatChain_Helper.getCatLink(this.dataTable.param.idSite, period,date,label);
-     catlink ='http://localhost:8080/cat/r/chain?op=history'+catlink;
+     var catLink = CatChain_Helper.getCatLink(this.dataTable.param.idSite, period,date,label);
+     if(catLink==null){
+       alert('Cat is not supported for this webiste');
+       return true;
+     }
   actionA.attr({
       target: '_blank',
-      href: catlink
+      href: catLink
   });
     return true;
 };

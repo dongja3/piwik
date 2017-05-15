@@ -1,7 +1,7 @@
 {
 "name": "CatChain",
 "description": "Show Chain Report from CAT",
-"version": "_oocl_1.0",
+"version": "1.0",
 "keywords": ["CAT","Chain", "api"],
 "homepage": "http://www.oocl.com",
 "license": "GPL v3+",
