@@ -1,15 +1,15 @@
 {
 "name": "CatChain",
 "description": "Show Chain Report from CAT",
-"version": "oocl_1.0",
+"version": "_oocl_1.0",
 "keywords": ["CAT","Chain", "api"],
-"homepage": "http://oocl.com",
+"homepage": "http://www.oocl.com",
 "license": "GPL v3+",
 "authors": [
     {
         "name": "Dongja3",
         "email": "jackie.dong@oocl.com",
-        "homepage": "http://oocl.com"
+        "homepage": "http://www.oocl.com"
     }
 ]
 }

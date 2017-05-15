@@ -64,8 +64,10 @@ DataTable_RowActions_Registry.register({
 
     isAvailableOnReport: function (dataTableParams) {
         if('getPageTitles'===dataTableParams.action){
+          if('day'==piwik.period||'month'==piwik.period||'week'==piwik.period)
           return true;
         }
+
 
         return false;
     },
