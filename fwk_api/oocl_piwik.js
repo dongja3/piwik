@@ -6,11 +6,20 @@
 
 
   (function() {
-    var l=document.getElementsByTagName('noscript')[0].getAttribute("src");
-    var u=l.substring(0,l.indexOf('?'))+'/';
+    var u=oocl_piwik_config.piwik_url+'/';
     _paq.push(['setTrackerUrl', u+'piwik.php']);
-    _paq.push(['setSiteId', l.substring(l.indexOf('?')+8,l.indexOf('&'))]);
-    var cname=l.substring(l.indexOf('&')+10,l.length)+'=';
+
+    var i;
+    var my_url;
+    for(i=0;i<oocl_piwik_config.piwik_sites.length;i++){
+      my_url=oocl_piwik_config.piwik_sites[i].url;
+      if(window.location.href.indexOf(my_url)!=-1){
+          _paq.push(['setSiteId', oocl_piwik_config.piwik_sites[i].siteId]);
+          var cname=oocl_piwik_config.piwik_sites[i].cookieid+'=';
+          break;
+      }
+    }
+
     var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
     g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
     var ca = document.cookie.split(';');
@@ -130,7 +139,23 @@ oocl_piwik.Common = function(){
     if(oocl_piwik_common._isAngular()){
       return window.location.hash.substr(1).replace('!/','')
     }
-    return window.location.href;
+    var url= window.location.href;
+    if(oocl_piwik_config.ignoreServicePrefix.length==0){
+      return url;
+    }
+    var i;
+    var ignoreUrl;
+    for(i=0;i<oocl_piwik_config.ignoreServicePrefix.length;i++){
+      ignoreUrl=oocl_piwik_config.ignoreServicePrefix[i];
+      if(url.indexOf(ignoreUrl)!=-1){
+        url = url.substring(url.indexOf(ignoreUrl)+ignoreUrl.length,url.length);
+        break;
+      }
+    }
+    if(url.indexOf('?')!=-1){
+      url = url.substring(0,url.indexOf('?'));
+    }
+    return url;
   };
 };
 oocl_piwik_common= new oocl_piwik.Common();
@@ -148,7 +173,8 @@ this._clearContext =function(){
     var context = new oocl_piwik.Context(oocl_piwik_bfName,oocl_piwik_customUrl);
     var uuid = oocl_piwik.uuid.generateUUID();
     localStorage.setItem(uuid, JSON.stringify(context));
-    oocl_piwik_common._setCatHeader(oocl_piwik_bfName)
+    oocl_piwik_common._setCatHeader(oocl_piwik_bfName);
+      oocl_piwik_common._clearContext();
     return uuid;
   };
   this._startTiming = function(uuid){

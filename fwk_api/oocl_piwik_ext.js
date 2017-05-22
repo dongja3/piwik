@@ -1,9 +1,12 @@
+/**
+* For Single Page EXTJS application should call following api before every ajax request
+* oocl_piwik_tracker.setupContext('search/userids');
+*/
 
 Ext.Ajax.on("beforerequest", function(conn, options){
-	//oocl_piwik_tracker.setupContext('search/userids');
 	var piwik_uuid=oocl_piwik_tracker._createContext();
 	oocl_piwik_common._setPiwikHeader(piwik_uuid);
-	oocl_piwik_tracker._clearContext();
+	// oocl_piwik_tracker._clearContext();
 	oocl_piwik_tracker._startTiming(piwik_uuid);
 });
 Ext.Ajax.on("requestcomplete",function(conn, response, options){
