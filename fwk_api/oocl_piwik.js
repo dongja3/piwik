@@ -174,7 +174,7 @@ this._clearContext =function(){
     var uuid = oocl_piwik.uuid.generateUUID();
     localStorage.setItem(uuid, JSON.stringify(context));
     oocl_piwik_common._setCatHeader(oocl_piwik_bfName);
-      oocl_piwik_common._clearContext();
+    this._clearContext();
     return uuid;
   };
   this._startTiming = function(uuid){
