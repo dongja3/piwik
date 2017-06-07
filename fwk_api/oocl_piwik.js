@@ -11,11 +11,19 @@
 
     var i;
     var my_url;
+    var callback;
     for(i=0;i<oocl_piwik_config.piwik_sites.length;i++){
       my_url=oocl_piwik_config.piwik_sites[i].url;
+      callback==oocl_piwik_config.piwik_sites[i].cookieid_callback;
       if(window.location.href.indexOf(my_url)!=-1){
           _paq.push(['setSiteId', oocl_piwik_config.piwik_sites[i].siteId]);
-          var cname=oocl_piwik_config.piwik_sites[i].cookieid+'=';
+          var cname;
+          if (callback && typeof(callback) === "function") {
+              cname = callback();
+          }else{
+              cname=oocl_piwik_config.piwik_sites[i].cookieid+'=';
+          }
+
           break;
       }
     }
@@ -100,12 +108,12 @@ oocl_piwik.Common = function(){
   this._setCatHeader = function(bfName){
   	if(oocl_piwik_common._isExt()){
   	  Ext.Ajax.defaultHeaders = {
-          'cat_url':bfName
+          'cat_uri':bfName
   	  };
   	}
   	if(oocl_piwik_common._isAngular()){
   	  angular.module('cmcd').run(function($http) {
-  		$http.defaults.headers.common['cat_url'] = bfName;
+  		$http.defaults.headers.common['cat_uri'] = bfName;
   	  });
   	}
   };
@@ -185,7 +193,7 @@ this._clearContext =function(){
     context.startTime=new Date();
     localStorage.setItem(uuid, JSON.stringify(context));
   };
-  this._endTiming = function(uuid){
+  this._endTiming = function(uuid, bfName){
     var context = JSON.parse(localStorage.getItem(uuid));
     if(context===null){
       return;
@@ -194,7 +202,14 @@ this._clearContext =function(){
     context.startTime= new Date(context.startTime);
 
     _paq.push(['setCustomUrl','/', context.customUrl]);
-    _paq.push(['setDocumentTitle', context.bfName]);
+
+    //For Cat case which will return business function name in response
+    if(typeof(bfName)==='undefined' || bfName===null || bfName.length===0){
+      _paq.push(['setDocumentTitle', context.bfName]);
+    }else{
+      _paq.push(['setDocumentTitle', bfName]);
+    }
+
     _paq.push(['setGenerationTimeMs', context.endTime.getTime()-context.startTime.getTime()]);
 	_paq.push(['setUserId', _piwik_cvalue]);
     _paq.push(['trackPageView']);
