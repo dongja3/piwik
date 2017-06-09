@@ -6,30 +6,29 @@
 
 
   (function() {
-    var u=oocl_piwik_config.piwik_url+'/';
-    _paq.push(['setTrackerUrl', u+'piwik.php']);
 
     var i;
     var my_url;
     var callback;
+    var cname;
     for(i=0;i<oocl_piwik_config.piwik_sites.length;i++){
       my_url=oocl_piwik_config.piwik_sites[i].url;
-      callback==oocl_piwik_config.piwik_sites[i].cookieid_callback;
+      callback=oocl_piwik_config.piwik_sites[i].cookieid_callback;
       if(window.location.href.indexOf(my_url)!=-1){
-          _paq.push(['setSiteId', oocl_piwik_config.piwik_sites[i].siteId]);
-          var cname;
+        var u=oocl_piwik_config.piwik_sites[i].piwik_url+'/';
+        _paq.push(['setTrackerUrl', u+'piwik.php']);
+        _paq.push(['setSiteId', oocl_piwik_config.piwik_sites[i].siteId]);
           if (callback && typeof(callback) === "function") {
               cname = callback();
           }else{
               cname=oocl_piwik_config.piwik_sites[i].cookieid+'=';
           }
-
+          var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+           g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
           break;
       }
     }
 
-    var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-    g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
     var ca = document.cookie.split(';');
     for(var i = 0; i < ca.length; i++) {
         var c = ca[i];
@@ -111,11 +110,12 @@ oocl_piwik.Common = function(){
           'cat_uri':bfName
   	  };
   	}
-  	if(oocl_piwik_common._isAngular()){
-  	  angular.module('cmcd').run(function($http) {
-  		$http.defaults.headers.common['cat_uri'] = bfName;
-  	  });
-  	}
+  	// if(oocl_piwik_common._isAngular()){
+  	//   angular.module('cmcd').run(function($http) {
+  	// 	$http.defaults.headers.common['cat_uri'] = bfName;
+  	//   });
+  	// }
+
   };
    this._setPiwikHeader = function(uuid){
   	if(oocl_piwik_common._isExt()){
@@ -123,11 +123,12 @@ oocl_piwik.Common = function(){
           'piwik_uuid':uuid
   	  };
   	}
-  	if(oocl_piwik_common._isAngular()){
-  	  angular.module('cmcd').run(function($http) {
-  		$http.defaults.headers.common['piwik_uuid'] = uuid;
-  	  });
-  	}
+  	// if(oocl_piwik_common._isAngular()){
+  	//   angular.module('cmcd').run(function($http) {
+  	// 	$http.defaults.headers.common['piwik_uuid'] = uuid;
+  	//   });
+  	// }
+
   };
   this._isAngular = function(){
     if(typeof angular =='undefined'){
@@ -136,7 +137,7 @@ oocl_piwik.Common = function(){
     return true;
   };
 
-  this._getDocTitile = function(){
+  this._getDocTitle = function(){
     if(oocl_piwik_common._isAngular()){
       return window.location.hash.substr(1).replace('!/','')
     }
@@ -145,7 +146,11 @@ oocl_piwik.Common = function(){
 
   this._getCustomUrl = function(){
     if(oocl_piwik_common._isAngular()){
-      return window.location.hash.substr(1).replace('!/','')
+      var url=window.location.hash.substr(1).replace('!/','');
+      if(url.indexOf('?')!=-1){
+      url = url.substring(0,url.indexOf('?'));
+    }
+      return url;
     }
     var url= window.location.href;
     if(oocl_piwik_config.ignoreServicePrefix.length==0){
@@ -200,8 +205,8 @@ this._clearContext =function(){
     }
     context.endTime=new Date();
     context.startTime= new Date(context.startTime);
-
     _paq.push(['setCustomUrl','/', context.customUrl]);
+
 
     //For Cat case which will return business function name in response
     if(typeof(bfName)==='undefined' || bfName===null || bfName.length===0){
@@ -209,9 +214,8 @@ this._clearContext =function(){
     }else{
       _paq.push(['setDocumentTitle', bfName]);
     }
-
     _paq.push(['setGenerationTimeMs', context.endTime.getTime()-context.startTime.getTime()]);
-	_paq.push(['setUserId', _piwik_cvalue]);
+	 _paq.push(['setUserId', _piwik_cvalue]);
     _paq.push(['trackPageView']);
     localStorage.removeItem(uuid);
   }
@@ -220,7 +224,7 @@ oocl_piwik_tracker= new oocl_piwik.Tracker();
 
 oocl_piwik.Context= function(bfName,customUrl){
   if(bfName==undefined){
-    this.bfName=oocl_piwik_common._getDocTitile()
+    this.bfName=oocl_piwik_common._getDocTitle()
   }else{
     this.bfName=bfName;
   }
@@ -232,7 +236,6 @@ oocl_piwik.Context= function(bfName,customUrl){
     this.customUrl=customUrl;
   }
   oocl_piwik_customUrl=this.customUrl;
-
 }
 
 
