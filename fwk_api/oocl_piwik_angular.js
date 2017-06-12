@@ -1,14 +1,4 @@
 var app = angular.module('my-app', [], function() {})
-app.controller('AppController', function($scope, $http) {
-  $scope.success = function() {
-    $http({
-      url:'http://localhost/piwik/piwik.js',
-      method:'GET'
-    }).success(function(data,header,config,status){
-      
-    });
-  }
-})
 
 var interceptor = function($q, $location) {
   return {

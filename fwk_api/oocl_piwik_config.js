@@ -22,6 +22,10 @@ oocl_piwik_config ={
     },
   ],
   ignoreServicePrefix: [
-    '/cmcd/service/'
+    // '/cmcd/service/'
+    '/fwk_api/test/'
   ]
+}
+function callback(){
+  return 'testuser';
 }

@@ -150,6 +150,7 @@ oocl_piwik.Common = function(){
       if(url.indexOf('?')!=-1){
       url = url.substring(0,url.indexOf('?'));
     }
+    console.log(url);
       return url;
     }
     var url= window.location.href;
@@ -186,6 +187,7 @@ this._clearContext =function(){
     var context = new oocl_piwik.Context(oocl_piwik_bfName,oocl_piwik_customUrl);
     var uuid = oocl_piwik.uuid.generateUUID();
     localStorage.setItem(uuid, JSON.stringify(context));
+    console.log(context);
     oocl_piwik_common._setCatHeader(oocl_piwik_bfName);
     this._clearContext();
     return uuid;
@@ -205,6 +207,7 @@ this._clearContext =function(){
     }
     context.endTime=new Date();
     context.startTime= new Date(context.startTime);
+ console.log(context);
     _paq.push(['setCustomUrl','/', context.customUrl]);
 
 

@@ -1,6 +1,8 @@
 var piwik_uuid;
 QUnit.test('_isAngular',function(assert){ 
-     assert.ok(oocl_piwik_common._isAngular(),'pass');
+    if(oocl_piwik_common._isAngular())
+      assert.ok(oocl_piwik_common._isAngular(),'pass');
+    else assert.ok(!oocl_piwik_common._isAngular(),'pass');
 });
 
 QUnit.test('_isExt',function(assert){ 
@@ -8,11 +10,15 @@ QUnit.test('_isExt',function(assert){
 });
 
 QUnit.test('_getDoctitle',function(assert){ 
-     assert.equal(oocl_piwik_common._getDocTitle(),'QUnit Test','pass');
+    if(!oocl_piwik_common._isAngular())
+      assert.equal(oocl_piwik_common._getDocTitle(),'QUnit Test','pass');
+    else  assert.equal(oocl_piwik_common._getDocTitle(),'','pass');
 });
 
 QUnit.test('_getCustomUrl',function(assert){ 
-     assert.equal(oocl_piwik_common._getCustomUrl(),'unit_test.html','pass');
+    if(!oocl_piwik_common._isAngular())
+      assert.equal(oocl_piwik_common._getCustomUrl(),'unit_test.html','pass');
+    else  assert.equal(oocl_piwik_common._getCustomUrl(),'','pass');
 });
 
 QUnit.test('setupContext',function(assert){ 
@@ -60,11 +66,20 @@ QUnit.test('Context',function(assert){
         customUrl:'testurl'
     };
      assert.propEqual(actual,expect,'pass');
-
-     actual=new oocl_piwik.Context();
-     expect={
-        bfName:'QUnit Test',
-        customUrl:'unit_test.html'
-    };
-     assert.propEqual(actual,expect,'pass');
+     if(!oocl_piwik_common._isAngular()){
+         actual=new oocl_piwik.Context();
+         expect={
+             bfName:'QUnit Test',
+             customUrl:'unit_test.html'
+        };
+        assert.propEqual(actual,expect,'pass');
+    }
+    else {
+        actual=new oocl_piwik.Context();
+        expect={
+             bfName:'',
+             customUrl:''
+         };
+        assert.propEqual(actual,expect,'pass');
+    }
 });
