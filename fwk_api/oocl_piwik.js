@@ -156,16 +156,22 @@ oocl_piwik.Common = function () {
 
   this._ignoreServicePrefix = function (url) {
     var customUrl = url;
-    if (oocl_piwik_config.ignoreServicePrefix.length != 0) {
-      var i;
-      var ignoreUrl;
-      for (i = 0; i < oocl_piwik_config.ignoreServicePrefix.length; i++) {
-        ignoreUrl = oocl_piwik_config.ignoreServicePrefix[i];
-        if (customUrl.indexOf(ignoreUrl) != -1) {
-          customUrl = customUrl.substring(customUrl.indexOf(ignoreUrl) + ignoreUrl.length, customUrl.length);
-          break;
-        }
-      }
+    // if (oocl_piwik_config.ignoreServicePrefix.length != 0) {
+    //   var i;
+    //   var ignoreUrl;
+    //   for (i = 0; i < oocl_piwik_config.ignoreServicePrefix.length; i++) {
+    //     ignoreUrl = oocl_piwik_config.ignoreServicePrefix[i];
+    //     if (customUrl.indexOf(ignoreUrl) != -1) {
+    //       customUrl = customUrl.substring(customUrl.indexOf(ignoreUrl) + ignoreUrl.length, customUrl.length);
+    //       break;
+    //     }
+    //   }
+    // }
+    if (customUrl.indexOf('//') != -1) {
+      customUrl = customUrl.substring(customUrl.indexOf('//')+2,url.length);
+    }
+    if (customUrl.indexOf('/') != -1) {
+      customUrl = customUrl.substring(customUrl.indexOf('/'),url.length);
     }
     if (customUrl.indexOf('?') != -1) {
       customUrl = customUrl.substring(0, customUrl.indexOf('?'));
@@ -207,7 +213,7 @@ oocl_piwik.Tracker = function () {
     }
     context.endTime = new Date();
     context.startTime = new Date(context.startTime);
-    _paq.push(['setCustomUrl', '/', context.customUrl]);
+    _paq.push(['setCustomUrl', context.customUrl]);
 
 
     //For Cat case which will return business function name in response
