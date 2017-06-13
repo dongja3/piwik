@@ -85,8 +85,8 @@ QUnit.test('Context',function(assert){
 });
 
 QUnit.test('_ignoreServicePrefix',function(assert){ 
-     var url='http://localhost/piwiktest/fwk_api/test/unit_test.html?user=111&password=222';
+     var url='http://localhost/unit_test.html?user=111&password=222';
      var actual=oocl_piwik_common._ignoreServicePrefix(url);
-     var expect='unit_test.html';
+     var expect='/unit_test.html';
      assert.equal(actual,expect,'pass');
 });
