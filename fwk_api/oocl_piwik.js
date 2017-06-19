@@ -19,9 +19,20 @@ _piwik_cvalue = '';
       _paq.push(['setTrackerUrl', u + 'piwik.php']);
       _paq.push(['setSiteId', oocl_piwik_config.piwik_sites[i].siteId]);
       if (callback && typeof (callback) === "function") {
-        cname = callback();
+        _piwik_cvalue = callback();
       } else {
         cname = oocl_piwik_config.piwik_sites[i].cookieid + '=';
+        var ca = document.cookie.split(';');
+        for (var i = 0; i < ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(cname) == 0) {
+            _piwik_cvalue = c.substring(cname.length, c.length);
+            break;
+          }
+        }
       }
       var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
       g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g, s);
@@ -29,17 +40,6 @@ _piwik_cvalue = '';
     }
   }
 
-  var ca = document.cookie.split(';');
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(cname) == 0) {
-      _piwik_cvalue = c.substring(cname.length, c.length);
-      break;
-    }
-  }
   var removedKeys = new Array();
   for (var i = 0; i < localStorage.length; i++) {
     if (localStorage.key(i).indexOf("oocl_piwik") == 0) {
@@ -168,10 +168,10 @@ oocl_piwik.Common = function () {
     //   }
     // }
     if (customUrl.indexOf('//') != -1) {
-      customUrl = customUrl.substring(customUrl.indexOf('//')+2,url.length);
+      customUrl = customUrl.substring(customUrl.indexOf('//') + 2, url.length);
     }
     if (customUrl.indexOf('/') != -1) {
-      customUrl = customUrl.substring(customUrl.indexOf('/'),url.length);
+      customUrl = customUrl.substring(customUrl.indexOf('/'), url.length);
     }
     if (customUrl.indexOf('?') != -1) {
       customUrl = customUrl.substring(0, customUrl.indexOf('?'));
