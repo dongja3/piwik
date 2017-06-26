@@ -154,7 +154,7 @@ oocl_piwik.Common = function () {
 
   this._ignoreServicePrefix = function (url) {
     var customUrl = url;
-    if (oocl_piwik_config.ignoreServicePrefix.length != 0) {
+    if (oocl_piwik_config.ignoreServicePrefix && oocl_piwik_config.ignoreServicePrefix.length != 0) {
       var i;
       var ignoreUrl;
       for (i = 0; i < oocl_piwik_config.ignoreServicePrefix.length; i++) {
