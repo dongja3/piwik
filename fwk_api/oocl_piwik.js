@@ -1,8 +1,15 @@
 var _paq = _paq || [];
 /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-_paq.push(['trackPageView']);
-_paq.push(['enableLinkTracking']);
+
 _piwik_cvalue = '';
+
+window.addEventListener('load', function (e) {
+  _paq.push(['setUserId', _piwik_cvalue]);
+  _paq.push(['setDocumentTitle', document.title]);
+  _paq.push(['trackPageView']);
+  _paq.push(['enableLinkTracking']);
+});
+
 
 
 (function () {
@@ -25,6 +32,7 @@ _piwik_cvalue = '';
         var ca = document.cookie.split(';');
         for (var i = 0; i < ca.length; i++) {
           var c = ca[i];
+          
           while (c.charAt(0) == ' ') {
             c = c.substring(1);
           }
@@ -34,6 +42,7 @@ _piwik_cvalue = '';
           }
         }
       }
+
       var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
       g.type = 'text/javascript'; g.async = true; g.defer = true; g.src = u + 'piwik.js'; s.parentNode.insertBefore(g, s);
       break;
@@ -104,10 +113,11 @@ oocl_piwik.Common = function () {
 
     return true;
   };
-  this._setCatHeader = function (bfName) {
+  this._setHeader = function (piwik_uuid,bfName) {
     if (oocl_piwik_common._isExt()) {
       Ext.Ajax.defaultHeaders = {
-        'cat_uri': bfName
+        'cat_url': bfName,
+        'piwik_uuid': piwik_uuid
       };
     }
     // if(oocl_piwik_common._isAngular()){
@@ -117,19 +127,7 @@ oocl_piwik.Common = function () {
     // }
 
   };
-  this._setPiwikHeader = function (uuid) {
-    if (oocl_piwik_common._isExt()) {
-      Ext.Ajax.defaultHeaders = {
-        'piwik_uuid': uuid
-      };
-    }
-    // if(oocl_piwik_common._isAngular()){
-    //   angular.module('cmcd').run(function($http) {
-    // 	$http.defaults.headers.common['piwik_uuid'] = uuid;
-    //   });
-    // }
 
-  };
   this._isAngular = function () {
     if (typeof angular == 'undefined') {
       return false;
@@ -156,17 +154,17 @@ oocl_piwik.Common = function () {
 
   this._ignoreServicePrefix = function (url) {
     var customUrl = url;
-    // if (oocl_piwik_config.ignoreServicePrefix.length != 0) {
-    //   var i;
-    //   var ignoreUrl;
-    //   for (i = 0; i < oocl_piwik_config.ignoreServicePrefix.length; i++) {
-    //     ignoreUrl = oocl_piwik_config.ignoreServicePrefix[i];
-    //     if (customUrl.indexOf(ignoreUrl) != -1) {
-    //       customUrl = customUrl.substring(customUrl.indexOf(ignoreUrl) + ignoreUrl.length, customUrl.length);
-    //       break;
-    //     }
-    //   }
-    // }
+    if (oocl_piwik_config.ignoreServicePrefix.length != 0) {
+      var i;
+      var ignoreUrl;
+      for (i = 0; i < oocl_piwik_config.ignoreServicePrefix.length; i++) {
+        ignoreUrl = oocl_piwik_config.ignoreServicePrefix[i];
+        if (customUrl.indexOf(ignoreUrl) != -1) {
+          customUrl = customUrl.substring(customUrl.indexOf(ignoreUrl) + ignoreUrl.length, customUrl.length);
+          break;
+        }
+      }
+    }
     if (customUrl.indexOf('//') != -1) {
       customUrl = customUrl.substring(customUrl.indexOf('//') + 2, url.length);
     }
@@ -194,7 +192,6 @@ oocl_piwik.Tracker = function () {
     var context = new oocl_piwik.Context(oocl_piwik_bfName, oocl_piwik_customUrl);
     var uuid = oocl_piwik.uuid.generateUUID();
     localStorage.setItem(uuid, JSON.stringify(context));
-    oocl_piwik_common._setCatHeader(oocl_piwik_bfName);
     this._clearContext();
     return uuid;
   };
@@ -215,7 +212,6 @@ oocl_piwik.Tracker = function () {
     context.startTime = new Date(context.startTime);
     _paq.push(['setCustomUrl', context.customUrl]);
 
-
     //For Cat case which will return business function name in response
     if (typeof (bfName) === 'undefined' || bfName === null || bfName.length === 0) {
       _paq.push(['setDocumentTitle', context.bfName]);
@@ -223,7 +219,7 @@ oocl_piwik.Tracker = function () {
       _paq.push(['setDocumentTitle', bfName]);
     }
     _paq.push(['setGenerationTimeMs', context.endTime.getTime() - context.startTime.getTime()]);
-    _paq.push(['setUserId', _piwik_cvalue]);
+    // _paq.push(['setUserId', _piwik_cvalue]);
     _paq.push(['trackPageView']);
     localStorage.removeItem(uuid);
   }
