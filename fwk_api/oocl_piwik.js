@@ -32,7 +32,7 @@ window.addEventListener('load', function (e) {
         var ca = document.cookie.split(';');
         for (var i = 0; i < ca.length; i++) {
           var c = ca[i];
-          
+
           while (c.charAt(0) == ' ') {
             c = c.substring(1);
           }
@@ -113,7 +113,7 @@ oocl_piwik.Common = function () {
 
     return true;
   };
-  this._setHeader = function (piwik_uuid,bfName) {
+  this._setHeader = function (piwik_uuid, bfName) {
     if (oocl_piwik_common._isExt()) {
       Ext.Ajax.defaultHeaders = {
         'cat_url': bfName,
@@ -161,7 +161,10 @@ oocl_piwik.Common = function () {
         ignoreUrl = oocl_piwik_config.ignoreServicePrefix[i];
         if (customUrl.indexOf(ignoreUrl) != -1) {
           customUrl = customUrl.substring(customUrl.indexOf(ignoreUrl) + ignoreUrl.length, customUrl.length);
-          break;
+          if (customUrl.indexOf('?') != -1) {
+            customUrl = customUrl.substring(0, customUrl.indexOf('?'));
+          }
+          return customUrl;
         }
       }
     }
@@ -204,24 +207,26 @@ oocl_piwik.Tracker = function () {
     localStorage.setItem(uuid, JSON.stringify(context));
   };
   this._endTiming = function (uuid, bfName) {
-    var context = JSON.parse(localStorage.getItem(uuid));
-    if (context === null) {
-      return;
-    }
-    context.endTime = new Date();
-    context.startTime = new Date(context.startTime);
-    _paq.push(['setCustomUrl', context.customUrl]);
+    if (uuid && bfName) {
+      var context = JSON.parse(localStorage.getItem(uuid));
+      if (context === null) {
+        return;
+      }
+      context.endTime = new Date();
+      context.startTime = new Date(context.startTime);
+      _paq.push(['setCustomUrl', context.customUrl]);
 
-    //For Cat case which will return business function name in response
-    if (typeof (bfName) === 'undefined' || bfName === null || bfName.length === 0) {
-      _paq.push(['setDocumentTitle', context.bfName]);
-    } else {
-      _paq.push(['setDocumentTitle', bfName]);
+      //For Cat case which will return business function name in response
+      if (typeof (bfName) === 'undefined' || bfName === null || bfName.length === 0) {
+        _paq.push(['setDocumentTitle', context.bfName]);
+      } else {
+        _paq.push(['setDocumentTitle', bfName]);
+      }
+      _paq.push(['setGenerationTimeMs', context.endTime.getTime() - context.startTime.getTime()]);
+      // _paq.push(['setUserId', _piwik_cvalue]);
+      _paq.push(['trackPageView']);
+      localStorage.removeItem(uuid);
     }
-    _paq.push(['setGenerationTimeMs', context.endTime.getTime() - context.startTime.getTime()]);
-    // _paq.push(['setUserId', _piwik_cvalue]);
-    _paq.push(['trackPageView']);
-    localStorage.removeItem(uuid);
   }
 };
 oocl_piwik_tracker = new oocl_piwik.Tracker();
