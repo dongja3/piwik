@@ -12,41 +12,42 @@ DataTable_RowActions_CatChain.registerReport = function (handler) {
 
 
 DataTable_RowActions_CatChain.prototype.onClick = function (actionA, tr, e) {
-     var label=this.getAllLevelLabelsFromTr(tr);
-     var date = piwik.currentDateString.replace('-','').replace('-','');
-     var period = piwik.period;
-     var catLink = CatChain_Helper.getCatLink(this.dataTable.param.idSite, period,date,label);
-     if(catLink==null){
-       alert('Cat is not supported for this webiste');
-       return true;
-     }
-  actionA.attr({
-      target: '_blank',
-      href: catLink
-  });
+    var label = this.getAllLevelLabelsFromTr(tr);
+    var date = piwik.currentDateString.replace('-', '').replace('-', '');
+    var period = piwik.period;
+    var catLink = CatChain_Helper.getCatLink(this.dataTable.param.idSite, period, date, label);
+    if (catLink == null) {
+        alert('Cat is not supported for this webiste');
+        return true;
+    }
+    actionA.attr({
+        target: '_blank',
+        href: catLink
+    });
     return true;
 };
 
-DataTable_RowActions_CatChain.prototype.getAllLevelLabelsFromTr=function(tr){
+DataTable_RowActions_CatChain.prototype.getAllLevelLabelsFromTr = function (tr) {
     var allClasses = tr.attr('class');
     var matches = allClasses.match(/level[0-9]+/);
     var level = parseInt(matches[0].substring(5, matches[0].length), 10);
-    var label = this.getLabelFromTr(tr).replace('@','');
-    while (level>0){
+    var label = this.getLabelFromTr(tr).replace('@', '');
+    while (level > 0) {
         var findLevel = 'level' + (level - 1);
         var ptr = tr;
         while ((ptr = ptr.prev()).size() > 0) {
             if (!ptr.hasClass(findLevel) || ptr.hasClass('nodata')) {
                 continue;
             }
-            var t = this.getLabelFromTr(ptr).replace('@','');
-            label = t+"/"+label;
+            var t = this.getLabelFromTr(ptr).replace('@', '');
+            label = t + "/" + label;
             break;
         }
         level--;
     }
     return label;
 }
+
 
 DataTable_RowActions_Registry.register({
     name: 'CatChain',
@@ -57,8 +58,8 @@ DataTable_RowActions_Registry.register({
     order: 20,
 
     dataTableIconTooltip: [
-      'CAT Chain',
-      'Cat Call Chain view'
+        'CAT Chain',
+        'Cat Call Chain view'
     ],
 
     createInstance: function (dataTable) {
@@ -66,12 +67,13 @@ DataTable_RowActions_Registry.register({
     },
 
     isAvailableOnReport: function (dataTableParams) {
-        if('getPageTitles'===dataTableParams.action){
-          if('day'==piwik.period||'month'==piwik.period||'week'==piwik.period)
-          return true;
+        if (piwik.siteName && piwik.siteName.indexOf('#CAT') != piwik.siteName.length - 4) {
+            return false;
         }
-
-
+        if ('getPageTitles' === dataTableParams.action) {
+            if ('day' == piwik.period || 'month' == piwik.period || 'week' == piwik.period)
+                return true;
+        }
         return false;
     },
 

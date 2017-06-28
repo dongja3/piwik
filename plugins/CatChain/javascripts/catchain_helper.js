@@ -4,6 +4,7 @@
  * @link http://piwik.org
  * @license http://www.gnu.org/licenses/gpl-3.0.html GPL v3 or later
  */
+var catHost='http://dongja3-w7:8080/cat/r/chain';
 
 var CatChain_Helper = {
 
@@ -30,15 +31,15 @@ var CatChain_Helper = {
           return null;
         }
         var catDoamin =piwik.siteName.substring(0,piwik.siteName.indexOf('#'));
-        var catHost= piwik.siteName.substring(piwik.siteName.indexOf('#')+1,piwik.siteName.length);
       //  var url = 'index.php?module=Overlay&period=' + encodeURIComponent(period) + '&date=' + encodeURIComponent(date) + '&idSite=' + encodeURIComponent(idSite);
-        var url='http://'+catHost+"/cat/r/chain";
+        var url=catHost;
         if(currentHour==null){
           url = url+'?op=history&domain='+catDoamin.toUpperCase()+ '&date=' + encodeURIComponent(date)+'&reportType='+encodeURIComponent(period);
         }else{
             url =url+'?domain='+catDoamin.toUpperCase()+ '&date=' + encodeURIComponent(currentHour);
         }
         url = url+'&name='+encodeURIComponent(actionName);
+        console.log(url);
         return url;
     },
 
