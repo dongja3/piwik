@@ -223,7 +223,7 @@ oocl_piwik.Tracker = function () {
         _paq.push(['setDocumentTitle', bfName]);
       }
       _paq.push(['setGenerationTimeMs', context.endTime.getTime() - context.startTime.getTime()]);
-      // _paq.push(['setUserId', _piwik_cvalue]);
+      _paq.push(['setUserId', _piwik_cvalue]);
       _paq.push(['trackPageView']);
       localStorage.removeItem(uuid);
     }
