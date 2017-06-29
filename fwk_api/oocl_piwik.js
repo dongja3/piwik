@@ -1,7 +1,8 @@
 var _paq = _paq || [];
 /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
 
-_piwik_cvalue = '';
+var _piwik_cvalue = '';
+var _piwik_disable = true;
 
 window.addEventListener('load', function (e) {
   _paq.push(['setUserId', _piwik_cvalue]);
@@ -22,6 +23,10 @@ window.addEventListener('load', function (e) {
     my_url = oocl_piwik_config.piwik_sites[i].url;
     callback = oocl_piwik_config.piwik_sites[i].cookieid_callback;
     if (window.location.href.indexOf(my_url) != -1) {
+      if (oocl_piwik_config.piwik_sites[i].disable) {
+        return;
+      }
+      _piwik_disable = false;
       var u = oocl_piwik_config.piwik_sites[i].piwik_url + '/';
       _paq.push(['setTrackerUrl', u + 'piwik.php']);
       _paq.push(['setSiteId', oocl_piwik_config.piwik_sites[i].siteId]);
@@ -114,7 +119,7 @@ oocl_piwik.Common = function () {
     return true;
   };
   this._setHeader = function (piwik_uuid, bfName) {
-    if (oocl_piwik_common._isExt()) {
+    if (oocl_piwik_common._isExt() && !_piwik_disable) {
       Ext.Ajax.defaultHeaders = {
         'cat_url': bfName,
         'piwik_uuid': piwik_uuid
@@ -153,6 +158,9 @@ oocl_piwik.Common = function () {
   };
 
   this._ignoreServicePrefix = function (url) {
+    if (_piwik_disable)
+      return;
+
     var customUrl = url;
     if (oocl_piwik_config.ignoreServicePrefix && oocl_piwik_config.ignoreServicePrefix.length != 0) {
       var i;
@@ -184,6 +192,8 @@ oocl_piwik_common = new oocl_piwik.Common();
 oocl_piwik.Tracker = function () { };
 oocl_piwik.Tracker = function () {
   this.setupContext = function (bfName) {
+    if (_piwik_disable)
+      return;
     oocl_piwik_bfName = bfName;
     oocl_piwik_customUrl = bfName;
   }
@@ -192,6 +202,8 @@ oocl_piwik.Tracker = function () {
     oocl_piwik_customUrl = null;
   }
   this._createContext = function () {
+    if (_piwik_disable)
+      return;
     var context = new oocl_piwik.Context(oocl_piwik_bfName, oocl_piwik_customUrl);
     var uuid = oocl_piwik.uuid.generateUUID();
     localStorage.setItem(uuid, JSON.stringify(context));
@@ -207,6 +219,8 @@ oocl_piwik.Tracker = function () {
     localStorage.setItem(uuid, JSON.stringify(context));
   };
   this._endTiming = function (uuid, bfName) {
+    if (_piwik_disable)
+      return;
     if (uuid && bfName) {
       var context = JSON.parse(localStorage.getItem(uuid));
       if (context === null) {

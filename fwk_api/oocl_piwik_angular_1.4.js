@@ -1,19 +1,14 @@
 var oocl_piwik_interceptor = function ($q) {
   return {
     request: function (config) {
-      for (var i = 0; i < oocl_piwik_config.piwik_sites.length; i++) {
-        if (window.location.href.indexOf(oocl_piwik_config.piwik_sites[i].url) != -1) {
-          if (!oocl_piwik_config.piwik_sites[i].canIgnoreRequest || !oocl_piwik_config.piwik_sites[i].canIgnoreRequest(config)) {
-            var bfname = oocl_piwik_common._ignoreServicePrefix(config.url);
-            oocl_piwik_tracker.setupContext(bfname);
-            var piwik_uuid = oocl_piwik_tracker._createContext();
-            // oocl_piwik_common._setPiwikHeader(piwik_uuid);
-            config.headers['piwik_uuid'] = piwik_uuid;
-            config.headers['cat_url'] = bfname;
-            oocl_piwik_tracker._startTiming(piwik_uuid);
-          }
-          break;
-        }
+      if (!oocl_piwik_config.canIgnoreRequest || !oocl_piwik_config.canIgnoreRequest(config)) {
+        var bfname = oocl_piwik_common._ignoreServicePrefix(config.url);
+        oocl_piwik_tracker.setupContext(bfname);
+        var piwik_uuid = oocl_piwik_tracker._createContext();
+        // oocl_piwik_common._setPiwikHeader(piwik_uuid);
+        config.headers['piwik_uuid'] = piwik_uuid;
+        config.headers['cat_url'] = bfname;
+        oocl_piwik_tracker._startTiming(piwik_uuid);
       }
       return config;
     },
