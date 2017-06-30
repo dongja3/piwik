@@ -1,5 +1,6 @@
-var piwik_uuid;
-var mySite={};
+var mySite={
+    disable:true
+};
 for (var i = 0; i < oocl_piwik_config.piwik_sites.length; i++) {
     if (location.href.indexOf(oocl_piwik_config.piwik_sites[i].url) != -1) {
         mySite = oocl_piwik_config.piwik_sites[i];
@@ -56,7 +57,7 @@ QUnit.test('_createContext', function (assert) {
         assert.propEqual(actual, expect, 'pass');
     }
     else {
-        piwik_uuid = oocl_piwik_tracker._createContext();
+        var piwik_uuid = oocl_piwik_tracker._createContext();
         var expect = {
             "bfName": oocl_piwik_common._getDocTitle(),
             "customUrl": oocl_piwik_common._getCustomUrl()
@@ -70,32 +71,30 @@ QUnit.test('_createContext', function (assert) {
 
 QUnit.test('_startTiming', function (assert) {
     if (mySite.disable) {
-        var expect ={};
-        localStorage.setItem('testuuid',JSON.stringify(expect));
+        var expect = {};
+        localStorage.setItem('testuuid', JSON.stringify(expect));
         oocl_piwik_tracker._startTiming('testuuid');
-        var actual=JSON.parse(localStorage.getItem('testuuid'));
+        var actual = JSON.parse(localStorage.getItem('testuuid'));
         assert.propEqual(actual, expect, 'pass');
     }
     else {
-        var actual = oocl_piwik_tracker._startTiming();
-        assert.strictEqual(actual, undefined, 'pass');
+        var context = {};
+        localStorage.setItem('testuuid', JSON.stringify(context));
+        oocl_piwik_tracker._startTiming('testuuid');
+        var actual = JSON.parse(localStorage.getItem('testuuid'));
+        assert.ok(actual.startTime, 'pass');
+        localStorage.removeItem('testuuid');
     }
 
 });
 
 
 QUnit.test('_endTiming', function (assert) {
-    if (mySite.disable) {
-        var expect = undefined;
-        oocl_piwik_tracker._endTiming('testuuid', 'test_cat_url');
-        var actual = JSON.parse(localStorage.getItem('testuuid'));
-        assert.propEqual(actual, expect, 'pass');
-    }
-    else {
-        oocl_piwik_tracker._endTiming(piwik_uuid, 'test_cat_url');
-        var actual = localStorage.getItem(piwik_uuid);
-        assert.strictEqual(actual, null, 'pass');
-    }
+    var expect = {};
+    oocl_piwik_tracker._endTiming('testuuid', 'test_cat_url');
+    var actual = JSON.parse(localStorage.getItem('testuuid'));
+    assert.propEqual(actual, expect, 'pass');
+    localStorage.removeItem('testuuid');
 });
 
 

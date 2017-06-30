@@ -211,6 +211,8 @@ oocl_piwik.Tracker = function () {
     return uuid;
   };
   this._startTiming = function (uuid) {
+    if (_piwik_disable)
+      return;
     var context = JSON.parse(localStorage.getItem(uuid));
     if (context === null) {
       return;
