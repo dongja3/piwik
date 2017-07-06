@@ -6,7 +6,12 @@ var _piwik_disable = true;
 
 window.addEventListener('load', function (e) {
   _paq.push(['setUserId', _piwik_cvalue]);
-  _paq.push(['setDocumentTitle', document.title]);
+  if (oocl_piwik_config.replaceTitle && typeof (oocl_piwik_config.replaceTitle) === "function") {
+    _paq.push(['setDocumentTitle', oocl_piwik_config.replaceTitle(document.title)]);
+  }
+  else {
+    _paq.push(['setDocumentTitle', document.title]);
+  }
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
 });
