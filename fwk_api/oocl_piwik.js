@@ -12,6 +12,7 @@ window.addEventListener('load', function (e) {
   else {
     _paq.push(['setDocumentTitle', document.title]);
   }
+  _paq.push(['setCustomUrl',oocl_piwik_common._ignoreQueryString(window.location.href)])
   _paq.push(['trackPageView']);
   _paq.push(['enableLinkTracking']);
 });
@@ -187,10 +188,14 @@ oocl_piwik.Common = function () {
     if (customUrl.indexOf('/') != -1) {
       customUrl = customUrl.substring(customUrl.indexOf('/'), url.length);
     }
-    if (customUrl.indexOf('?') != -1) {
-      customUrl = customUrl.substring(0, customUrl.indexOf('?'));
+    return this._ignoreQueryString(customUrls);
+  };
+  this._ignoreQueryString=function(url){
+    var result=url;
+    if (url.indexOf('?') != -1) {
+      result = url.substring(0, url.indexOf('?'));
     }
-    return customUrl;
+    return result;
   }
 };
 oocl_piwik_common = new oocl_piwik.Common();
