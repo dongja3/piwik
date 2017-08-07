@@ -4,18 +4,20 @@ var _paq = _paq || [];
 var _piwik_cvalue = '';
 var _piwik_disable = true;
 
-window.addEventListener('load', function (e) {
-  _paq.push(['setUserId', _piwik_cvalue]);
-  if (oocl_piwik_config.replaceTitle && typeof (oocl_piwik_config.replaceTitle) === "function") {
-    _paq.push(['setDocumentTitle', oocl_piwik_config.replaceTitle(document.title)]);
-  }
-  else {
-    _paq.push(['setDocumentTitle', document.title]);
-  }
-  _paq.push(['setCustomUrl',oocl_piwik_common._ignoreQueryString(window.location.href)])
-  _paq.push(['trackPageView']);
-  _paq.push(['enableLinkTracking']);
-});
+if (window.addEventListener) {
+  window.addEventListener('load', function (e) {
+    if (oocl_piwik_tracker) {
+      oocl_piwik_tracker._trackPageView();
+    }
+  });
+}
+else if(window.addEventListener){
+  window.attachEvent('onload', function (e) {
+    if (oocl_piwik_tracker) {
+      oocl_piwik_tracker._trackPageView();
+    }
+  });
+}
 
 
 
@@ -190,8 +192,8 @@ oocl_piwik.Common = function () {
     }
     return this._ignoreQueryString(customUrls);
   };
-  this._ignoreQueryString=function(url){
-    var result=url;
+  this._ignoreQueryString = function (url) {
+    var result = url;
     if (url.indexOf('?') != -1) {
       result = url.substring(0, url.indexOf('?'));
     }
@@ -253,6 +255,19 @@ oocl_piwik.Tracker = function () {
       _paq.push(['trackPageView']);
       localStorage.removeItem(uuid);
     }
+  };
+
+  this._trackPageView = function () {
+    _paq.push(['setUserId', _piwik_cvalue]);
+    if (oocl_piwik_config && oocl_piwik_config.replaceTitle && typeof (oocl_piwik_config.replaceTitle) === "function") {
+      _paq.push(['setDocumentTitle', oocl_piwik_config.replaceTitle(document.title)]);
+    }
+    else {
+      _paq.push(['setDocumentTitle', document.title]);
+    }
+    _paq.push(['setCustomUrl', oocl_piwik_common._ignoreQueryString(window.location.href)])
+    _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
   }
 };
 oocl_piwik_tracker = new oocl_piwik.Tracker();
