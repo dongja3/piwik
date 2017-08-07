@@ -11,7 +11,7 @@ if (window.addEventListener) {
     }
   });
 }
-else if(window.addEventListener){
+else if(window.attachEvent){
   window.attachEvent('onload', function (e) {
     if (oocl_piwik_tracker) {
       oocl_piwik_tracker._trackPageView();
