@@ -10,11 +10,23 @@ if (window.addEventListener) {
       oocl_piwik_tracker._trackPageView();
     }
   });
+
+  window.addEventListener('hashchange', function (e) {
+    if (oocl_piwik_tracker) {
+      oocl_piwik_tracker._trackHashChange();
+    }
+  });
 }
-else if(window.attachEvent){
+else if (window.attachEvent) {
   window.attachEvent('onload', function (e) {
     if (oocl_piwik_tracker) {
       oocl_piwik_tracker._trackPageView();
+    }
+  });
+
+  window.attachEvent('onhashchange', function (e) {
+    if (oocl_piwik_tracker) {
+      oocl_piwik_tracker._trackHashChange();
     }
   });
 }
@@ -75,17 +87,6 @@ else if(window.attachEvent){
 
 var oocl_piwik_bfName = null;
 var oocl_piwik_customUrl = null;
-window.addEventListener('hashchange', function () {
-  _paq.push(['deleteCustomVariables', 'page']);
-  _paq.push(['setUserId', _piwik_cvalue]);
-  _paq.push(['setReferrerUrl', window.location.href]);
-  // make Piwik aware of newly added content
-  var content = document.getElementById('content');
-  _paq.push(['MediaAnalytics::scanForMedia', content]);
-  _paq.push(['FormAnalytics::scanForForms', content]);
-  _paq.push(['trackContentImpressionsWithinNode', content]);
-  _paq.push(['enableLinkTracking']);
-});
 
 if (typeof oocl_piwik === 'undefined') { oocl_piwik = {}; }
 
@@ -267,6 +268,18 @@ oocl_piwik.Tracker = function () {
     }
     _paq.push(['setCustomUrl', oocl_piwik_common._ignoreQueryString(window.location.href)])
     _paq.push(['trackPageView']);
+    _paq.push(['enableLinkTracking']);
+  };
+
+  this._trackHashChange = function () {
+    _paq.push(['deleteCustomVariables', 'page']);
+    _paq.push(['setUserId', _piwik_cvalue]);
+    _paq.push(['setReferrerUrl', window.location.href]);
+    // make Piwik aware of newly added content
+    var content = document.getElementById('content');
+    _paq.push(['MediaAnalytics::scanForMedia', content]);
+    _paq.push(['FormAnalytics::scanForForms', content]);
+    _paq.push(['trackContentImpressionsWithinNode', content]);
     _paq.push(['enableLinkTracking']);
   }
 };
