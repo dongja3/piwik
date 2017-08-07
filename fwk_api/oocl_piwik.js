@@ -11,7 +11,7 @@ if (window.addEventListener) {
     }
   });
 }
-else if(window.attachEvent){
+else if(window.addEventListener){
   window.attachEvent('onload', function (e) {
     if (oocl_piwik_tracker) {
       oocl_piwik_tracker._trackPageView();
@@ -190,7 +190,7 @@ oocl_piwik.Common = function () {
     if (customUrl.indexOf('/') != -1) {
       customUrl = customUrl.substring(customUrl.indexOf('/'), url.length);
     }
-    return this._ignoreQueryString(customUrls);
+    return this._ignoreQueryString(customUrl);
   };
   this._ignoreQueryString = function (url) {
     var result = url;
