@@ -202,6 +202,8 @@ oocl_piwik.Common = function () {
   }
 };
 oocl_piwik_common = new oocl_piwik.Common();
+_paq.push(['setCustomUrl', oocl_piwik_common._ignoreQueryString(window.location.href)]);
+
 oocl_piwik.Tracker = function () { };
 oocl_piwik.Tracker = function () {
   this.setupContext = function (bfName) {
@@ -254,6 +256,7 @@ oocl_piwik.Tracker = function () {
       _paq.push(['setGenerationTimeMs', context.endTime.getTime() - context.startTime.getTime()]);
       _paq.push(['setUserId', _piwik_cvalue]);
       _paq.push(['trackPageView']);
+      _paq.push(['setCustomUrl', oocl_piwik_common._ignoreQueryString(window.location.href)]);
       localStorage.removeItem(uuid);
     }
   };
@@ -266,7 +269,7 @@ oocl_piwik.Tracker = function () {
     else {
       _paq.push(['setDocumentTitle', document.title]);
     }
-    _paq.push(['setCustomUrl', oocl_piwik_common._ignoreQueryString(window.location.href)])
+    _paq.push(['setCustomUrl', oocl_piwik_common._ignoreQueryString(window.location.href)]);
     _paq.push(['trackPageView']);
     _paq.push(['enableLinkTracking']);
   };
